@@ -1,43 +1,46 @@
 function sumOfSquares() {
   console.log(
-    solution(5)
+    solution(1),
+    solution(2),
+    solution(3),
+    solution(4),
+    solution(5),
   )
 }
-
+/**
+ * This Code does work from 6 and above
+ */
 function solution(gridNum) {
   let grid = []
-  let maxNum = 9
+  let maxVal = 9
+  let doubleGridNum = gridNum * 2
+  let amountToRemoveCol = []
+  let amountToRemoveRow = []
+  let diff = 0
+
+  for (let i = 0; i < doubleGridNum; i++) {
+    if (i < gridNum) {
+      amountToRemoveRow[i%gridNum] = -(maxVal * (gridNum) % (i + 1))
+    } else {
+      amountToRemoveCol[i%gridNum] = -(maxVal * (gridNum) % (i + 1))
+    }
+  }
 
   for (let i = 0; i < gridNum; i++) {
     grid[i] = []
     for (let j = 0; j < gridNum; j++) {
-      grid[i][j] = maxNum
+           let maxNum = Math.max(amountToRemoveRow[i],amountToRemoveCol[j])
+      amountToRemoveRow[i] -= maxNum
+      amountToRemoveCol[j] -= maxNum
+      grid[i][j] = maxVal + maxNum
+      diff += maxNum
     }
   }
 
-  let doubleGridNum = gridNum * 2
-  let amountToRemove = []
-  for (let i = 0; i < doubleGridNum; i++) {
-    amountToRemove[i] = -(maxNum * (gridNum) % (i + 1))
+  for (let i =0; i< amountToRemoveCol.length; i++){
+    grid[0][i] += amountToRemoveCol[i]
   }
-
-  // console.log(amountToRemove)
-
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid.length; j++) {
-      if (i === 0) {
-        // grid[i][j] = grid[i][j] + amountToRemove[j + 5]
-      } else {
-         let diff = amountToRemove[j+5] - amountToRemove[i]
-         amountToRemove[j+5] = diff
-         
-          grid[i][j] = grid[i][j] + amountToRemove[j]
-      }
-
-    }
-    
-  }
-
-  console.log(amountToRemove)
-  console.log(grid)
+  diff += amountToRemoveCol.reduce((prev,curr) => prev+curr)
+  let num = grid.map(n => n.join('')).join('')
+  return [(maxVal*gridNum*gridNum)+diff, num]
 }
